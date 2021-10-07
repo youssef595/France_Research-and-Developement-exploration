@@ -1,2 +1,2 @@
-# france_R-D
-Exploration of the R&amp;D landscape in France
+# france_Research and Development companies
+Exploration of the Research and Development landscape in France
