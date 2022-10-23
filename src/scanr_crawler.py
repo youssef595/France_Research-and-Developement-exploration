@@ -3,7 +3,6 @@ import numpy as np
 import math
 from IPython.display import clear_output
 import random
-
 from retrying import retry
 import time
 import requests
@@ -11,12 +10,13 @@ from multiprocessing import Pool
 from concurrent.futures import ThreadPoolExecutor
 from itertools import compress
 from functools import partial
-
 import warnings
 warnings.filterwarnings("ignore")
 
 structures_api = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/structures/search/"
 publications_api = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/publications/search"
+
+
 
 @retry
 def test_if_found(Id: str,
@@ -77,7 +77,7 @@ def filter_publication_id(data):
 
 def get_companies_publications(Ids,
                                endpoint=publications_api,
-                               fields_to_return=["year", "type", "title", "patents"]):
+                               fields_to_return=["year", "type", "title", "subtitle", "affiliations", "summary", "patents"]):
     """
     for each structure, we use the list of ids of publications
     to get their data
@@ -99,6 +99,8 @@ def format_publication(publication):
     output["type"] = publication.get("type")
     output["title"] = publication.get("title").get("en")  if publication.get("title").get("en") \
                                                           else publication.get("title").get("fr")
+    output["summary"] = publication.get("summary").get("en")  if publication.get("summary").get("en") \
+                                                          else publication.get("summary").get("fr")
     output["n_patents"] = len(publication.get("patents")) if publication.get("patents") \
                                                           else None
 
@@ -118,6 +120,7 @@ def format_company_publications(publications):
               "year": None,
               "type": None,
               "title": None,
+              "summary":None,
               "n_patents": None}
         output = [output]
         return output
